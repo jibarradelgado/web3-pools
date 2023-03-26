@@ -10,12 +10,15 @@ import {
   LabelDetail,
   LabelGroup,
 } from 'semantic-ui-react'
-import Error from 'next/error'
 
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 import { connector } from '@/config/web3'
 import Web3 from 'web3'
+import axios from 'axios'
+
 import useTruncatedAddress from '@/hooks/useTruncatedAddress'
+import { baseUrl } from '@/config/service/config'
+import useGetDBUser from '@/hooks/useGetDBUser'
 
 const Navbar = () => {
   const [balance, setBalance] = useState(0)
@@ -24,6 +27,7 @@ const Navbar = () => {
 
   const web3 = library as Web3
   const isUnsupportedChain = error instanceof UnsupportedChainIdError
+  const user = useGetDBUser(account!)
 
   const connect = useCallback(() => {
     activate(connector)
