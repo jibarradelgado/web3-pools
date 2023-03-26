@@ -11,11 +11,22 @@ export class UsersController {
     return this.usersService.users()
   }
 
-  @Get(':userId')
-  async getUser(@Param('poolId') userId: number): Promise<UsersModel> {
+  @Get('id/:userId')
+  async getUserById(@Param('userId') userId: number): Promise<UsersModel> {
     return this.usersService.user({
       where: {
         id: Number(userId),
+      },
+    })
+  }
+
+  @Get('wallet/:userWallet')
+  async getUserByWallet(
+    @Param('userWallet') wallet_address: string,
+  ): Promise<UsersModel> {
+    return this.usersService.user({
+      where: {
+        wallet_address: wallet_address,
       },
     })
   }
