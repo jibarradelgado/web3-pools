@@ -1,16 +1,23 @@
 import React, { useState } from 'react'
 import { Item, Button, Divider, Modal, Input } from 'semantic-ui-react'
 import { ReserveUserData } from '@/types/AaveAppTypes'
+import { useWeb3React } from '@web3-react/core'
+import Web3 from 'web3'
 
 type PoolProps = {
   reserveData: ReserveUserData
 }
 
 const Pool = ({reserveData}: PoolProps) => {
+  const { active, activate, deactivate, account, error, library } =
+  useWeb3React()
   const [modalOpen, setModalOpen] = useState(false)
   const name = reserveData.symbol
   const apy = reserveData.liquidityRate
   const [balance, setBalance] = useState(reserveData.aToken)
+  const [supply, setSupply] = useState(0)
+
+  const web3 = library as Web3
 
   return (
     <>
@@ -31,7 +38,7 @@ const Pool = ({reserveData}: PoolProps) => {
       >
         <Modal.Header>Supply {name}</Modal.Header>
         <Modal.Content>
-          <Input type="number" placeholder="0.00" />
+          <Input type="number" placeholder="0.00" value={supply} onChange={(e) => setSupply(Number(e.target.value))}/>
         </Modal.Content>
         <Modal.Actions>
           <Button>Approve to continue</Button>

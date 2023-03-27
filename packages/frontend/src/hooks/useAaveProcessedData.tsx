@@ -4,7 +4,6 @@ import Web3 from 'web3'
 
 import useAaveProtocolDataProvider from '@/hooks/useAaveProtocolDataProvider'
 import { ReserveUserData } from '@/types/AaveAppTypes'
-import { string } from 'prop-types'
 
 const getTokenData = async(token: string[], aaveProtocolDataProvider: any, account:string) => {
   const [
@@ -15,7 +14,9 @@ const getTokenData = async(token: string[], aaveProtocolDataProvider: any, accou
     ])
 
     const liqRate = parseInt(reserveDataResult['liquidityRate']) / 10 ** 25
+    //console.log(reserveDataResult)
     const aToken = parseInt(userReserveData['currentATokenBalance']) / 10 ** 18
+    // console.log(userReserveData)
 
     return {
       address: token[1],
@@ -28,29 +29,23 @@ const getTokenData = async(token: string[], aaveProtocolDataProvider: any, accou
 const useAaveProcessedData = () => {
   const [aaveProcessedData, setAaveProcessedData] = useState([] as ReserveUserData[])
   const [loading, setLoading] = useState(true)
-  const { active, library, account, chainId } = useWeb3React()
+  const { library, account } = useWeb3React()
   const aaveProtocolDataProvider = useAaveProtocolDataProvider()
   const web3 = library as Web3
-
-
 
   const update = useCallback(async () => {
     if (aaveProtocolDataProvider) {
       setLoading(true)
-      console.log('loading')
 
       const reservesTokens = await aaveProtocolDataProvider?.methods
           .getAllReservesTokens()
           .call() as []
-      // console.log(reservesTokens)
 
       const tokens = await Promise.all(reservesTokens)
       const tokensPromise = tokens.map((token) => getTokenData(token, aaveProtocolDataProvider, account!))
       const reserveData = await Promise.all(tokensPromise)
 
-      console.log(reserveData)
       setAaveProcessedData(reserveData)
-      console.log('ended loading')
       setLoading(false)
     }
   }, [aaveProtocolDataProvider, account])
