@@ -4,6 +4,26 @@ import Web3 from 'web3'
 
 import useAaveProtocolDataProvider from '@/hooks/useAaveProtocolDataProvider'
 import { ReserveUserData } from '@/types/AaveAppTypes'
+import { string } from 'prop-types'
+
+const getTokenData = async(token: string[], aaveProtocolDataProvider: any, account:string) => {
+  const [
+    reserveDataResult,
+    userReserveData] = await Promise.all([
+      aaveProtocolDataProvider.methods.getReserveData(token[1]).call(),
+      aaveProtocolDataProvider.methods.getUserReserveData(token[1], account).call(),
+    ])
+
+    const liqRate = parseInt(reserveDataResult['liquidityRate']) / 10 ** 25
+    const aToken = parseInt(userReserveData['currentATokenBalance']) / 10 ** 18
+
+    return {
+      address: token[1],
+      symbol: token[0],
+      liquidityRate: liqRate,
+      aToken: aToken
+    }
+}
 
 const useAaveProcessedData = () => {
   const [aaveProcessedData, setAaveProcessedData] = useState([] as ReserveUserData[])
@@ -12,55 +32,28 @@ const useAaveProcessedData = () => {
   const aaveProtocolDataProvider = useAaveProtocolDataProvider()
   const web3 = library as Web3
 
+
+
   const update = useCallback(async () => {
     if (aaveProtocolDataProvider) {
       setLoading(true)
-
-      if (!web3.utils.isAddress(account!)) {
-        return
-      }
+      console.log('loading')
 
       const reservesTokens = await aaveProtocolDataProvider?.methods
           .getAllReservesTokens()
           .call() as []
-      console.log(reservesTokens)
+      // console.log(reservesTokens)
 
-      let reserveData:ReserveUserData[] = []
-      reservesTokens.forEach(async (elem) => {
-        const reserveDataResult = await aaveProtocolDataProvider?.methods
-        .getReserveData(elem[1])
-        .call()
+      const tokens = await Promise.all(reservesTokens)
+      const tokensPromise = tokens.map((token) => getTokenData(token, aaveProtocolDataProvider, account!))
+      const reserveData = await Promise.all(tokensPromise)
 
-        console.log(reserveDataResult)
-        let liqRate = parseInt(reserveDataResult['liquidityRate']) / 10 ** 25
-        console.log(liqRate)
-        // let borRate = parseInt(reserveDataResult['variableBorrowRate']) / 10 ** 25
-        // console.log(borRate)
-        // let staRate = parseInt(reserveDataResult['stableBorrowRate']) / 10 ** 25
-        // console.log(staRate)
-
-        const userReserveData = await aaveProtocolDataProvider?.methods
-        .getUserReserveData(
-          elem[1],
-          account,
-        )
-        .call()
-      console.log(userReserveData)
-
-      let aToken = parseInt(userReserveData['currentATokenBalance']) / 10 ** 18
-      console.log(aToken)
-
-      reserveData.push({
-        address: elem[1],
-        symbol: elem[0],
-        liquidityRate: liqRate,
-        aToken: aToken
-      })
-      })
+      console.log(reserveData)
       setAaveProcessedData(reserveData)
+      console.log('ended loading')
       setLoading(false)
     }
-  }, [aaveProtocolDataProvider, account, web3?.utils])
+  }, [aaveProtocolDataProvider, account])
 
   useEffect(() => {
     update()

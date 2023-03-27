@@ -82,7 +82,6 @@ const Navbar = () => {
               </>
             ) : (
               <Button
-                type="button"
                 onClick={connect}
                 disabled={isUnsupportedChain}
               >

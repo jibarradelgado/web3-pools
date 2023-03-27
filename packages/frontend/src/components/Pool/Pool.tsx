@@ -6,17 +6,20 @@ type PoolProps = {
   reserveData: ReserveUserData
 }
 
-const Pool = () => {
+const Pool = ({reserveData}: PoolProps) => {
   const [modalOpen, setModalOpen] = useState(false)
+  const name = reserveData.symbol
+  const apy = reserveData.liquidityRate
+  const [balance, setBalance] = useState(reserveData.aToken)
 
   return (
     <>
       <Item>
         <Item.Content className="pool-content">
-          <div>Asset: USDT</div>
-          <div>Balance: 9,000</div>
-          <div>APY 59%</div>
-          <div>
+          <div className='pool-field'>Asset: {name}</div>
+          <div className='pool-field'>Balance: {balance}</div>
+          <div className='pool-field'>APY {Number(apy.toFixed(3))}%</div>
+          <div className='pool-field'>
             <Button type="button" onClick={() => setModalOpen(true)} >Supply</Button>
           </div>
         </Item.Content>
@@ -26,7 +29,7 @@ const Pool = () => {
         open={modalOpen}
         size='mini'
       >
-        <Modal.Header>Supply Coin</Modal.Header>
+        <Modal.Header>Supply {name}</Modal.Header>
         <Modal.Content>
           <Input type="number" placeholder="0.00" />
         </Modal.Content>

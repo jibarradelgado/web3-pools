@@ -22,3 +22,7 @@ a {
   display: flex;
   justify-content: space-evenly;
 }
+
+.content.pool-content .pool-field {
+  width: 200px;
+}
