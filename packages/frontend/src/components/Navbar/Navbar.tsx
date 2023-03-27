@@ -14,10 +14,8 @@ import {
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 import { connector } from '@/config/web3'
 import Web3 from 'web3'
-import axios from 'axios'
 
 import useTruncatedAddress from '@/hooks/useTruncatedAddress'
-import { baseUrl } from '@/config/service/config'
 import useGetDBUser from '@/hooks/useGetDBUser'
 
 const Navbar = () => {

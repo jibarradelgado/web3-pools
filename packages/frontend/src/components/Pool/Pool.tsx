@@ -1,9 +1,13 @@
 import React, { useState } from 'react'
 import { Item, Button, Divider, Modal, Input } from 'semantic-ui-react'
+import { ReserveUserData } from '@/types/AaveAppTypes'
+
+type PoolProps = {
+  reserveData: ReserveUserData
+}
 
 const Pool = () => {
   const [modalOpen, setModalOpen] = useState(false)
-
 
   return (
     <>
