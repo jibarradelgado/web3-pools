@@ -1,0 +1,13 @@
+{
+  "name": "web3-pools",
+  "version": "1.0.0",
+  "description": "An application to interact with Aave protocol",
+  "repository": "git@github.com:jibarradelgado/web3-pools.git",
+  "author": "Jorge Ibarra <hello@jorgeibarra.com.mx>",
+  "license": "ISC",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ]
+}
