@@ -9,5 +9,8 @@
   "workspaces": [
     "packages/backend",
     "packages/frontend"
-  ]
+  ],
+  "scripts": {
+    "build": "yarn workspaces run build"
+  }
 }
