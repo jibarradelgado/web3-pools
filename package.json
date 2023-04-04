@@ -7,7 +7,7 @@
   "license": "ISC",
   "private": true,
   "workspaces": [
-    "backend",
-    "frontend"
+    "packages/backend",
+    "packages/frontend"
   ]
 }
